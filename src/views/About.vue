@@ -1,5 +1,21 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <app-content :title="title">
+    <ol class="breadcrumb" slot="breadcrumb">
+      <li class="active"><i class="fa fa-info fa-fw"></i> {{ title }}</li>
+    </ol></app-content>
 </template>
+
+<script>
+import AppContent from '@/components/AppContent'
+
+export default {
+  components: {
+    AppContent
+  },
+  computed: {
+    title () {
+      return 'Tentang'
+    }
+  }
+}
+</script>

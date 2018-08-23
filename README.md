@@ -1,9 +1,11 @@
-# tokoflix
+# TokoFlix
+
+TokoFlix is a movies streaming platform created by the biggest E-Commerce in Indonesia: Tokopedia.
 
 ## Project setup
-```
-npm install
-```
+
+1. `npm install`
+2. Set your `MOVIE_DB_API_KEY` in `/src/config.js`
 
 ### Compiles and hot-reloads for development
 ```

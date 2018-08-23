@@ -1,8 +1,8 @@
 import _ from 'lodash'
 
-import {RESET_HOME, FETCH_NOW_PLAYING} from './actions.type'
-import {fetchNowPlaying} from '@/common/tmdb.service'
 import {addMovieAttributes} from '@/common/utils'
+import {fetchNowPlaying} from '@/common/tmdb.service'
+import {RESET_HOME, FETCH_NOW_PLAYING} from './actions.type'
 import {
   LOADING_NOW_PLAYING_END,
   LOADING_NOW_PLAYING_START,

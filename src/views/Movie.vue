@@ -9,7 +9,7 @@
       <li class="active">{{ title }}</li>
     </ol>
 
-    <div class="box box-success" :class="{'loading-detail': !movie}">
+    <div class="box box-success" :class="{'loading-box-height': !movie}">
       <div class="box-body">
         <div class="col-md-3" v-if="movie">
           <poster :src="movie.poster_url" :alt="movie.title" klass="col-sm-12" style="background: #fff;" />
@@ -27,7 +27,7 @@
         </div>
         <div class="col-md-6" v-if="movie">
           <span class="badge bg-red">
-            <i class="fa fa-star fa-fw"></i> {{ movie.vote_average }}&nbsp;
+            <i class="fa fa-star fa-fw"></i> {{ movie.vote_average }}/10&nbsp;
             <i class="fa fa-users fa-fw"></i> {{ movie.vote_count }}
           </span>&nbsp;
           <span class="badge bg-green">
@@ -63,9 +63,7 @@
           </template>
         </div>
       </div>
-      <div class="overlay" v-show="!movie">
-        <i class="fa fa-refresh fa-spin"></i>
-      </div>
+      <loading-spin v-show="!movie" />
     </div>
   </app-content>
 </template>
@@ -79,6 +77,7 @@ import Movie from '@/components/Movie'
 import Poster from '@/components/Poster'
 import {isPurchased} from '@/common/utils'
 import AppContent from '@/components/AppContent'
+import LoadingSpin from '@/components/LoadingSpin'
 import {
   BUY_MOVIE,
   FETCH_CASTS,
@@ -91,7 +90,8 @@ export default {
   components: {
     Movie,
     Poster,
-    AppContent
+    AppContent,
+    LoadingSpin
   },
   computed: {
     title () {
@@ -159,7 +159,7 @@ export default {
 </script>
 
 <style scoped>
-.loading-detail {
+.loading-box-height {
   height: 100px;
 }
 </style>

@@ -2,18 +2,6 @@ import slugify from 'slugify'
 
 import Config from '@/config'
 
-export function isPurchased (purchasedMovies, movieId) {
-  return purchasedMovies.find(movie => movie === movieId) !== undefined
-}
-
-export function getMovieDbImageUrl (path, size = 154) {
-  if (path) {
-    return `${Config.MOVIE_DB_IMG_URL}/w${size}${path}`
-  }
-
-  return 'https://via.placeholder.com/154x231'
-}
-
 export function addMovieAttributes (movie) {
   movie.slug = `${movie.id}-${slugify(movie.title)}`
   movie.price = getMoviePriceByRating(movie.vote_average)
@@ -36,4 +24,16 @@ export function getMoviePriceByRating (rating) {
   }
 
   return 3500
+}
+
+export function getMovieDbImageUrl (path, size = 154) {
+  if (path) {
+    return `${Config.MOVIE_DB_IMG_URL}/w${size}${path}`
+  }
+
+  return 'https://via.placeholder.com/154x231'
+}
+
+export function isPurchased (purchasedMovies, movieId) {
+  return purchasedMovies.find(movie => movie === movieId) !== undefined
 }

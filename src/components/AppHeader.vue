@@ -12,7 +12,7 @@
         <div class="navbar-custom-menu">
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <a href="#" class="dropdown-toggle">
                 <i class="fa fa-money fa-fw"></i> {{ balance | currency('Rp ', 0, {thousandsSeparator: '.'}) }}
               </a>
             </li>

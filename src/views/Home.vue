@@ -25,9 +25,7 @@
           </li>
         </ul>
       </div>
-      <div class="overlay" v-show="isNowPlayingMoviesLoading">
-        <i class="fa fa-refresh fa-spin"></i>
-      </div>
+      <loading-spin v-show="isNowPlayingMoviesLoading" />
     </div>
   </app-content>
 </template>
@@ -37,6 +35,7 @@ import {mapActions, mapGetters} from 'vuex'
 
 import MovieList from '@/components/MovieList'
 import AppContent from '@/components/AppContent'
+import LoadingSpin from '@/components/LoadingSpin'
 import {FETCH_NOW_PLAYING} from '@/store/actions.type'
 
 export default {
@@ -47,7 +46,8 @@ export default {
   },
   components: {
     MovieList,
-    AppContent
+    AppContent,
+    LoadingSpin
   },
   computed: {
     title () {

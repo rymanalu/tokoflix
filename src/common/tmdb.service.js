@@ -17,7 +17,7 @@ export function fetchRecommendations (id) {
   return get(movieDbUrl(`movie/${id}/recommendations`))
 }
 
-export function fetchNowPlaying (page = 1, region = 'US') {
+export function fetchNowPlaying (page = 1, region = 'ID') {
   return get(movieDbUrl('movie/now_playing'), {page, region})
 }
 

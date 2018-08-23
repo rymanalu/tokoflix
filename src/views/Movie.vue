@@ -9,37 +9,46 @@
       <li class="active">{{ title }}</li>
     </ol>
 
-    <div class="box box-success" :class="{'loading-detail': !movieDetail}">
+    <div class="box box-success" :class="{'loading-detail': !movie}">
       <div class="box-body">
-        <div class="col-md-3" v-if="movieDetail">
-          <poster :src="movieDetail.poster_url" :alt="movieDetail.title" klass="col-sm-12" style="background: #fff;" />
+        <div class="col-md-3" v-if="movie">
+          <poster :src="movie.poster_url" :alt="movie.title" klass="col-sm-12" style="background: #fff;" />
           <button
             type="button"
-            @click="buyMovie(movieDetail)"
-            :disabled="! canBuyMovie(movieDetail)"
-            v-if="! isMoviePurchased(movieDetail.id)"
+            @click="buyMovie(movie)"
+            :disabled="! canBuyMovie(movie)"
+            v-if="! isMoviePurchased(movie.id)"
             class="btn btn-danger btn-block col-sm-12"
           >
             <i class="fa fa-shopping-cart fa-fw"></i>&nbsp;
-            Beli ({{ movieDetail.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }})
+            Beli ({{ movie.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }})
           </button>
           <p v-else align="center">You have purchased this movie</p>
         </div>
-        <div class="col-md-6" v-if="movieDetail">
+        <div class="col-md-6" v-if="movie">
           <span class="badge bg-red">
-            <i class="fa fa-star fa-fw"></i> {{ movieDetail.vote_average }}&nbsp;
-            <i class="fa fa-users fa-fw"></i> {{ movieDetail.vote_count }}
+            <i class="fa fa-star fa-fw"></i> {{ movie.vote_average }}&nbsp;
+            <i class="fa fa-users fa-fw"></i> {{ movie.vote_count }}
           </span>&nbsp;
           <span class="badge bg-green">
-            <i class="fa fa-clock-o fa-fw"></i> {{ movieDetail.runtime }} menit
+            <i class="fa fa-clock-o fa-fw"></i> {{ movie.runtime }} menit
+          </span>&nbsp;
+          <span class="badge bg-yellow">
+            <i class="fa fa-calendar fa-fw"></i> {{ releaseDate(movie.release_date) }}
+          </span>&nbsp;
+          <span class="badge bg-blue" v-if="movie.adult">
+            <i class="fa fa-user fa-fw"></i> Dewasa
           </span>
-          <dl v-if="movieDetail">
+          <dl v-if="movie">
             <br>
-            <dd>{{ movieDetail.overview }}</dd>
+            <dd>{{ movie.overview }}</dd>
+            <br>
+            <dt>Jenis Film</dt>
+            <dd>{{ genres() }}</dd>
             <br>
             <dt>Pemeran</dt>
             <dd>
-              <li v-for="cast in casts" :key="cast.id">{{ cast.name }}</li>
+              {{ credits() }}
             </dd>
           </dl>
         </div>
@@ -54,7 +63,7 @@
           </template>
         </div>
       </div>
-      <div class="overlay" v-show="!movieDetail">
+      <div class="overlay" v-show="!movie">
         <i class="fa fa-refresh fa-spin"></i>
       </div>
     </div>
@@ -63,6 +72,7 @@
 
 <script>
 import _ from 'lodash'
+import moment from 'moment'
 import {mapGetters, mapActions} from 'vuex'
 
 import Movie from '@/components/Movie'
@@ -85,23 +95,31 @@ export default {
   },
   computed: {
     title () {
-      return this.movieDetail ? this.movieDetail.title : ''
+      return this.movie ? this.movie.title : ''
     },
     ...mapGetters([
       'casts',
+      'movie',
       'balance',
       'similar',
       'purchasedMovies',
       'recommendations'
-    ]),
-    ...mapGetters({
-      movieDetail: 'movie'
-    })
+    ])
   },
   created () {
     this.fetchResources(this.movieId)
   },
   methods: {
+    credits () {
+      const casts = _.map(this.casts, 'name')
+
+      return _.join(casts, ', ')
+    },
+    genres () {
+      const genres = _.map(this.movie.genres, 'name')
+
+      return _.join(genres, ', ')
+    },
     canBuyMovie (movie) {
       return this.balance >= movie.price
     },
@@ -114,6 +132,9 @@ export default {
       this.$store.dispatch(FETCH_MOVIE, movieId)
       this.$store.dispatch(FETCH_SIMILAR_MOVIES, movieId)
       this.$store.dispatch(FETCH_RECOMMENDATIONS, movieId)
+    },
+    releaseDate (date) {
+      return moment(date).format('DD MMM YYYY')
     }
   },
   props: {

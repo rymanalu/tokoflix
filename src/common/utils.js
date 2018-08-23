@@ -1,5 +1,9 @@
 import Config from '@/config'
 
+export function isPurchased (purchasedMovies, movieId) {
+  return purchasedMovies.find(movie => movie === movieId) !== undefined
+}
+
 export function getMovieDbImageUrl (path, size = 154) {
   if (path) {
     return `${Config.MOVIE_DB_IMG_URL}/w${size}${path}`

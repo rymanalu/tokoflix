@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import slugify from 'slugify'
 
-import {FETCH_NOW_PLAYING} from './actions.type'
+import {RESET_HOME, FETCH_NOW_PLAYING} from './actions.type'
 import {fetchNowPlaying} from '@/common/tmdb.service'
 import {
   getMovieDbImageUrl,
@@ -10,7 +10,9 @@ import {
 import {
   LOADING_NOW_PLAYING_END,
   LOADING_NOW_PLAYING_START,
-  SET_NOW_PLAYING
+  SET_NOW_PLAYING,
+  RESET_HOME_STATE,
+  SET_PAGE
 } from './mutations.type'
 
 const state = {
@@ -46,6 +48,9 @@ const actions = {
       .catch(error => {
         throw new Error(error)
       })
+  },
+  [RESET_HOME] ({commit}) {
+    commit(RESET_HOME_STATE)
   }
 }
 
@@ -67,6 +72,12 @@ const mutations = {
 
     state.currentPageNowPlayingMovies = data.page
     state.totalPagesNowPlayingMovies = data.total_pages
+  },
+  [RESET_HOME_STATE] (state) {
+    state.currentPageNowPlayingMovies = 1
+  },
+  [SET_PAGE] (state, page) {
+    state.currentPageNowPlayingMovies = page
   }
 }
 

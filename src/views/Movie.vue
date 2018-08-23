@@ -95,7 +95,7 @@ export default {
   },
   computed: {
     title () {
-      return this.movie ? this.movie.title : ''
+      return this.movie ? this.movie.original_title : ''
     },
     ...mapGetters([
       'casts',

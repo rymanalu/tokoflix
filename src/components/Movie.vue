@@ -2,9 +2,9 @@
   <div :class="klass">
     <router-link :to="{name: 'movie', params: {slug: movie.slug, movieId: movie.id}}">
       <span class="purchased" v-if="isPurchased(movie.id)">Purchased</span>
-      <poster :src="movie.poster_url" :alt="movie.title" />
+      <poster :src="movie.poster_url" :alt="movie.original_title" />
     </router-link>
-    <p><b>{{ movie.title }}</b></p>
+    <p><b>{{ movie.original_title }}</b></p>
     <p><i>{{ movie.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }}</i></p>
   </div>
 </template>

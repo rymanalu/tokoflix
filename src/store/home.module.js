@@ -1,12 +1,8 @@
 import _ from 'lodash'
-import slugify from 'slugify'
 
 import {RESET_HOME, FETCH_NOW_PLAYING} from './actions.type'
 import {fetchNowPlaying} from '@/common/tmdb.service'
-import {
-  getMovieDbImageUrl,
-  getMoviePriceByRating
-} from '@/common/utils'
+import {addMovieAttributes} from '@/common/utils'
 import {
   LOADING_NOW_PLAYING_END,
   LOADING_NOW_PLAYING_START,
@@ -62,14 +58,7 @@ const mutations = {
     state.isNowPlayingMoviesLoading = true
   },
   [SET_NOW_PLAYING] (state, data) {
-    state.nowPlayingMovies = _.chunk(data.results.map(movie => {
-      movie.slug = `${movie.id}-${slugify(movie.title)}`
-      movie.price = getMoviePriceByRating(movie.vote_average)
-      movie.poster_url = getMovieDbImageUrl(movie.poster_path, 154)
-
-      return movie
-    }), 4)
-
+    state.nowPlayingMovies = _.chunk(data.results.map(addMovieAttributes), 4)
     state.currentPageNowPlayingMovies = data.page
     state.totalPagesNowPlayingMovies = data.total_pages
   },

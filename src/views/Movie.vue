@@ -1,21 +1,31 @@
 <template>
   <app-content :title="title">
     <ol class="breadcrumb" slot="breadcrumb">
-      <li><router-link :to="{ name: 'home' }"><i class="fa fa-film fa-fw"></i> Beranda</router-link></li>
+      <li>
+        <router-link :to="{name: 'home', query: {page: 1}}">
+          <i class="fa fa-film fa-fw"></i> Beranda
+        </router-link>
+      </li>
       <li class="active">{{ title }}</li>
     </ol>
 
-    <div class="box box-success" v-if="movieDetail">
+    <div class="box box-success" :class="{'loading-detail': !movieDetail}">
       <div class="box-body">
-        <div class="col-md-3">
-          <img :src="movieDetail.poster_url" :alt="movieDetail.title" class="col-sm-12" style="background: #fff;">
-          <button type="button" class="btn btn-danger btn-block col-sm-12" :disabled="! canBuyMovie(movieDetail)" v-if="! isMoviePurchased(movieDetail.id)" @click="buyMovie(movieDetail)">
-            <i class="fa fa-shopping-cart fa-fw"></i>
+        <div class="col-md-3" v-if="movieDetail">
+          <poster :src="movieDetail.poster_url" :alt="movieDetail.title" klass="col-sm-12" style="background: #fff;" />
+          <button
+            type="button"
+            @click="buyMovie(movieDetail)"
+            :disabled="! canBuyMovie(movieDetail)"
+            v-if="! isMoviePurchased(movieDetail.id)"
+            class="btn btn-danger btn-block col-sm-12"
+          >
+            <i class="fa fa-shopping-cart fa-fw"></i>&nbsp;
             Beli ({{ movieDetail.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }})
           </button>
           <p v-else align="center">You have purchased this movie</p>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6" v-if="movieDetail">
           <span class="badge bg-red">
             <i class="fa fa-star fa-fw"></i> {{ movieDetail.vote_average }}&nbsp;
             <i class="fa fa-users fa-fw"></i> {{ movieDetail.vote_count }}
@@ -36,27 +46,16 @@
         <div class="col-md-3" v-if="similar.length || recommendations.length">
           <template v-if="similar.length">
             <h4>Serupa</h4>
-            <div class="col-sm-12 movie-item" v-for="movie in similar" :key="movie.id">
-              <router-link :to="{ name: 'movie', params: {slug: movie.slug, movieId: movie.id} }">
-                <span class="purchased" v-if="isMoviePurchased(movie.id)">Purchased</span>
-                <img :src="movie.poster_url" :alt="movie.title">
-              </router-link>
-              <p><b>{{ movie.title }}</b></p>
-              <p><i>{{ movie.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }}</i></p>
-            </div>
+            <movie klass="col-sm-12" :movie="movie" v-for="movie in similar" :key="movie.id" />
           </template>
           <template v-if="recommendations.length > 0">
             <h4>Rekomendasi</h4>
-            <div class="col-sm-12 movie-item" v-for="movie in recommendations" :key="movie.id">
-              <router-link :to="{ name: 'movie', params: {slug: movie.slug, movieId: movie.id} }">
-                <span class="purchased" v-if="isMoviePurchased(movie.id)">Purchased</span>
-                <img :src="movie.poster_url" :alt="movie.title">
-              </router-link>
-              <p><b>{{ movie.title }}</b></p>
-              <p><i>{{ movie.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }}</i></p>
-            </div>
+            <movie klass="col-sm-12" :movie="movie" v-for="movie in recommendations" :key="movie.id" />
           </template>
         </div>
+      </div>
+      <div class="overlay" v-show="!movieDetail">
+        <i class="fa fa-refresh fa-spin"></i>
       </div>
     </div>
   </app-content>
@@ -66,18 +65,22 @@
 import _ from 'lodash'
 import {mapGetters, mapActions} from 'vuex'
 
+import Movie from '@/components/Movie'
+import Poster from '@/components/Poster'
 import {isPurchased} from '@/common/utils'
 import AppContent from '@/components/AppContent'
 import {
+  BUY_MOVIE,
   FETCH_CASTS,
   FETCH_MOVIE,
   FETCH_SIMILAR_MOVIES,
-  FETCH_RECOMMENDATIONS,
-  BUY_MOVIE
+  FETCH_RECOMMENDATIONS
 } from '@/store/actions.type'
 
 export default {
   components: {
+    Movie,
+    Poster,
     AppContent
   },
   computed: {
@@ -88,8 +91,8 @@ export default {
       'casts',
       'balance',
       'similar',
-      'recommendations',
-      'purchasedMovies'
+      'purchasedMovies',
+      'recommendations'
     ]),
     ...mapGetters({
       movieDetail: 'movie'
@@ -99,19 +102,19 @@ export default {
     this.fetchResources(this.movieId)
   },
   methods: {
-    isMoviePurchased (movieId) {
-      return isPurchased(this.purchasedMovies, movieId)
-    },
     canBuyMovie (movie) {
       return this.balance >= movie.price
+    },
+    ...mapActions({buyMovie: BUY_MOVIE}),
+    isMoviePurchased (movieId) {
+      return isPurchased(this.purchasedMovies, movieId)
     },
     fetchResources (movieId) {
       this.$store.dispatch(FETCH_CASTS, movieId)
       this.$store.dispatch(FETCH_MOVIE, movieId)
       this.$store.dispatch(FETCH_SIMILAR_MOVIES, movieId)
       this.$store.dispatch(FETCH_RECOMMENDATIONS, movieId)
-    },
-    ...mapActions({buyMovie: BUY_MOVIE})
+    }
   },
   props: {
     movieId: {
@@ -135,11 +138,7 @@ export default {
 </script>
 
 <style scoped>
-.movie-item .purchased {
-  position: absolute;
-  top: 10px;
-  padding: 2px 15px;
-  background: crimson;
-  color: #fff
+.loading-detail {
+  height: 100px;
 }
 </style>

@@ -1,13 +1,11 @@
 <template>
   <div class="wrapper">
     <app-header />
-
     <div class="content-wrapper">
       <div class="container">
         <router-view />
       </div>
     </div>
-
     <app-footer />
   </div>
 </template>
@@ -18,7 +16,8 @@ import AppFooter from '@/components/AppFooter'
 
 export default {
   components: {
-    AppHeader, AppFooter
+    AppHeader,
+    AppFooter
   }
 }
 </script>

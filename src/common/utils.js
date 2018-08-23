@@ -1,3 +1,5 @@
+import slugify from 'slugify'
+
 import Config from '@/config'
 
 export function isPurchased (purchasedMovies, movieId) {
@@ -10,6 +12,14 @@ export function getMovieDbImageUrl (path, size = 154) {
   }
 
   return 'https://via.placeholder.com/154x231'
+}
+
+export function addMovieAttributes (movie) {
+  movie.slug = `${movie.id}-${slugify(movie.title)}`
+  movie.price = getMoviePriceByRating(movie.vote_average)
+  movie.poster_url = getMovieDbImageUrl(movie.poster_path, 154)
+
+  return movie
 }
 
 export function getMoviePriceByRating (rating) {

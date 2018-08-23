@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import slugify from 'slugify'
 
 import {
   FETCH_CASTS,
@@ -8,6 +7,7 @@ import {
   FETCH_RECOMMENDATIONS
 } from './actions.type'
 import {
+  addMovieAttributes,
   getMovieDbImageUrl,
   getMoviePriceByRating
 } from '@/common/utils'
@@ -116,13 +116,7 @@ const mutations = {
   [SET_SIMILAR_MOVIES] (state, {results}) {
     const similar = _.slice(results, 0, 3)
 
-    state.similar = similar.map(movie => {
-      movie.slug = `${movie.id}-${slugify(movie.title)}`
-      movie.price = getMoviePriceByRating(movie.vote_average)
-      movie.poster_url = getMovieDbImageUrl(movie.poster_path, 154)
-
-      return movie
-    })
+    state.similar = similar.map(addMovieAttributes)
   },
   [RESET_SIMILAR_MOVIES] (state) {
     state.similar = []
@@ -130,13 +124,7 @@ const mutations = {
   [SET_RECOMMENDATIONS] (state, {results}) {
     const recommendations = _.slice(results, 0, 3)
 
-    state.recommendations = recommendations.map(movie => {
-      movie.slug = `${movie.id}-${slugify(movie.title)}`
-      movie.price = getMoviePriceByRating(movie.vote_average)
-      movie.poster_url = getMovieDbImageUrl(movie.poster_path, 154)
-
-      return movie
-    })
+    state.recommendations = recommendations.map(addMovieAttributes)
   },
   [RESET_RECOMMENDATIONS] (state) {
     state.recommendations = []

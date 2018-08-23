@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import Movie from '@/views/Movie.vue'
+import Home from '@/views/Home'
+import Movie from '@/views/Movie'
 
 Vue.use(Router)
 

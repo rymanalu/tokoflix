@@ -3,6 +3,7 @@ import _ from 'lodash'
 import {
   FETCH_CASTS,
   FETCH_MOVIE,
+  FETCH_REVIEWS,
   FETCH_SIMILAR_MOVIES,
   FETCH_RECOMMENDATIONS
 } from './actions.type'
@@ -16,6 +17,8 @@ import {
   SET_MOVIE,
   RESET_CASTS,
   RESET_MOVIE,
+  SET_REVIEWS,
+  RESET_REVIEWS,
   SET_SIMILAR_MOVIES,
   SET_RECOMMENDATIONS,
   RESET_SIMILAR_MOVIES,
@@ -24,6 +27,7 @@ import {
 import {
   fetchCasts,
   fetchMovie,
+  fetchReviews,
   fetchSimilarMovies,
   fetchRecommendations
 } from '@/common/tmdb.service'
@@ -31,6 +35,7 @@ import {
 const state = {
   casts: [],
   movie: null,
+  reviews: [],
   similar: [],
   recommendations: []
 }
@@ -41,6 +46,9 @@ const getters = {
   },
   movie (state) {
     return state.movie
+  },
+  reviews (state) {
+    return state.reviews
   },
   similar (state) {
     return state.similar
@@ -68,6 +76,17 @@ const actions = {
     fetchMovie(id)
       .then(({data}) => {
         commit(SET_MOVIE, data)
+      })
+      .catch(error => {
+        throw new Error(error)
+      })
+  },
+  [FETCH_REVIEWS] ({commit}, id) {
+    commit(RESET_REVIEWS)
+
+    fetchReviews(id)
+      .then(({data}) => {
+        commit(SET_REVIEWS, data)
       })
       .catch(error => {
         throw new Error(error)
@@ -112,6 +131,12 @@ const mutations = {
   },
   [RESET_MOVIE] (state) {
     state.movie = null
+  },
+  [SET_REVIEWS] (state, {results}) {
+    state.reviews = _.slice(results, 0, 3)
+  },
+  [RESET_REVIEWS] (state) {
+    state.reviews = []
   },
   [SET_SIMILAR_MOVIES] (state, {results}) {
     const similar = _.slice(results, 0, 3)

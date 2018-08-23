@@ -9,6 +9,10 @@ export function fetchMovie (id) {
   return get(movieDbUrl(`movie/${id}`))
 }
 
+export function fetchReviews (id) {
+  return get(movieDbUrl(`movie/${id}/reviews`))
+}
+
 export function fetchSimilarMovies (id) {
   return get(movieDbUrl(`movie/${id}/similar`))
 }

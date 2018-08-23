@@ -13,33 +13,35 @@
       <div class="box-body">
         <div class="col-md-3" v-if="movie">
           <poster :src="movie.poster_url" :alt="movie.title" klass="col-sm-12" style="background: #fff;" />
+          <p v-if="isMoviePurchased(movie.id)" align="center">
+            You have purchased this movie
+          </p>
           <button
+            v-else
             type="button"
             @click="buyMovie(movie)"
             :disabled="! canBuyMovie(movie)"
-            v-if="! isMoviePurchased(movie.id)"
             class="btn btn-danger btn-block col-sm-12"
           >
             <i class="fa fa-shopping-cart fa-fw"></i>&nbsp;
             Beli ({{ movie.price | currency('Rp ', 0, {thousandsSeparator: '.'}) }})
           </button>
-          <p v-else align="center">You have purchased this movie</p>
         </div>
         <div class="col-md-6" v-if="movie">
-          <span class="badge bg-red">
+          <badge color="red">
             <i class="fa fa-star fa-fw"></i> {{ movie.vote_average }}/10&nbsp;
             <i class="fa fa-users fa-fw"></i> {{ movie.vote_count }}
-          </span>&nbsp;
-          <span class="badge bg-green">
+          </badge>&nbsp;
+          <badge color="green">
             <i class="fa fa-clock-o fa-fw"></i> {{ movie.runtime }} menit
-          </span>&nbsp;
-          <span class="badge bg-yellow">
+          </badge>&nbsp;
+          <badge color="yellow">
             <i class="fa fa-calendar fa-fw"></i> {{ releaseDate(movie.release_date) }}
-          </span>&nbsp;
-          <span class="badge bg-blue" v-if="movie.adult">
+          </badge>&nbsp;
+          <badge color="blue" v-if="movie.adult">
             <i class="fa fa-user fa-fw"></i> Dewasa
-          </span>
-          <dl v-if="movie">
+          </badge>
+          <dl>
             <br>
             <dd>{{ movie.overview }}</dd>
             <br>
@@ -53,14 +55,8 @@
           </dl>
         </div>
         <div class="col-md-3" v-if="similar.length || recommendations.length">
-          <template v-if="similar.length">
-            <h4>Serupa</h4>
-            <movie klass="col-sm-12" :movie="movie" v-for="movie in similar" :key="movie.id" />
-          </template>
-          <template v-if="recommendations.length > 0">
-            <h4>Rekomendasi</h4>
-            <movie klass="col-sm-12" :movie="movie" v-for="movie in recommendations" :key="movie.id" />
-          </template>
+          <right-bar-movie title="Serupa" :movies="similar" v-if="similar.length" />
+          <right-bar-movie title="Rekomendasi" :movies="recommendations" v-if="recommendations.length" />
         </div>
       </div>
       <loading-spin v-show="!movie" />
@@ -73,11 +69,13 @@ import _ from 'lodash'
 import moment from 'moment'
 import {mapGetters, mapActions} from 'vuex'
 
+import Badge from '@/components/Badge'
 import Movie from '@/components/Movie'
 import Poster from '@/components/Poster'
 import {isPurchased} from '@/common/utils'
 import AppContent from '@/components/AppContent'
 import LoadingSpin from '@/components/LoadingSpin'
+import RightBarMovie from '@/components/RightBarMovie'
 import {
   BUY_MOVIE,
   FETCH_CASTS,
@@ -88,10 +86,12 @@ import {
 
 export default {
   components: {
+    Badge,
     Movie,
     Poster,
     AppContent,
-    LoadingSpin
+    LoadingSpin,
+    RightBarMovie
   },
   computed: {
     title () {

@@ -3,7 +3,7 @@
     <nav class="navbar navbar-static-top">
       <div class="container">
         <div class="navbar-header">
-          <router-link :to="{ name: 'home' }" class="navbar-brand"><b>Toko</b><i>Flix</i></router-link>
+          <router-link :to="{name: 'home', query: {page: 1}}" class="navbar-brand"><b>Toko</b><i>Flix</i></router-link>
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
             <i class="fa fa-bars"></i>
           </button>
@@ -13,8 +13,7 @@
           <ul class="nav navbar-nav">
             <li class="dropdown user user-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <img src="../assets/avatar.png" class="user-image" alt="User Image">
-                <span class="hidden-xs">Alexander Pierce</span>
+                <i class="fa fa-money fa-fw"></i> {{ balance | currency('Rp ', 0, {thousandsSeparator: '.'}) }}
               </a>
             </li>
           </ul>
@@ -25,5 +24,11 @@
 </template>
 
 <script>
-export default {}
+import {mapGetters} from 'vuex'
+
+export default {
+  computed: {
+    ...mapGetters(['balance'])
+  }
+}
 </script>
